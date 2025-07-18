@@ -18,7 +18,7 @@ else:
 
 # List all books in a library
 library_name = "City Library"
-library = Library.objects.filter(name=library_name).first()
+library = Library.objects.get(name=library_name).first()
 if library:
     books_in_library = library.books.all()
     print(f"Books in {library.name}: {[book.title for book in books_in_library]}")
