@@ -9,7 +9,7 @@ from bookshelf.models import Author, Book, Library, Librarian
 
 # Query all books by a specific author
 author_name = "John Doe"
-author = Author.objects.filter(name=author_name).first()
+author = Author.objects.get(name=author_name).first()
 if author:
     books_by_author = Book.objects.filter(author=author)
     print(f"Books by {author.name}: {[book.title for book in books_by_author]}")
