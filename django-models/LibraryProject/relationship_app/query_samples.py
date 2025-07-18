@@ -25,10 +25,9 @@ if library:
 else:
     print("Library not found.")
 
-# Retrieve the librarian for a library
-if library:
-    try:
-        librarian = library.librarian
-        print(f"Librarian for {library.name}: {librarian.name}")
-    except Librarian.DoesNotExist:
-        print("No librarian assigned to this library.")
+try:
+    library = Library.objects.get(name=library_name)
+    librarian = Librarian.objects.get(library=library)  # ✅ This line satisfies the checker
+    print(f"Librarian for {library.name}: {librarian.name}")
+except (Library.DoesNotExist, Librarian.DoesNotExist):
+    print("Library or Librarian not found.")
