@@ -28,7 +28,12 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('books/add/', views.add_book, name='add_book'),
     path('books/<int:pk>/edit/', views.edit_book, name='edit_book'),
-    path('books/<int:pk>/delete/', views.delete_book, name='delete_book')
+    path('books/<int:pk>/delete/', views.delete_book, name='delete_book'),
+    path('add_book/', views.add_book, name='add_book'),         # ✅ Add Book URL
+    path('edit_book/<int:pk>/', views.edit_book, name='edit_book'),  # ✅ Edit Book URL
+
+    # you can also add the delete URL for completeness
+    path('delete_book/<int:pk>/', views.delete_book, name='delete_book'),
     # ... any other views
 ]
 
