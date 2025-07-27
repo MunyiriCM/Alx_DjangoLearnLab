@@ -150,6 +150,7 @@ ALLOWED_HOSTS = ['yourdomain.com']  # Set your domain
 
 # HTTPS and Security Settings
 SECURE_SSL_REDIRECT = True  # Redirect all HTTP to HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_HSTS_SECONDS = 31536000  # Instruct browser to use HTTPS for 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Include subdomains in HSTS
 SECURE_HSTS_PRELOAD = True  # Allow preloading of HSTS policy
