@@ -1,4 +1,5 @@
 from django.db import models
+#from .models import Book
 
 class Author(models.Model):
     name = models.CharField(max_length=100)
@@ -7,7 +8,7 @@ class Author(models.Model):
         return self.name
 
 class Book(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=200)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -15,7 +16,7 @@ class Book(models.Model):
 
 class Library(models.Model):
     name = models.CharField(max_length=100)
-    books = models.ManyToManyField(Book)
+    books = models.ManyToManyField("Book")
 
     def __str__(self):
         return self.name
@@ -30,6 +31,7 @@ class Librarian(models.Model):
 
 # Create your models here.
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 
 class UserProfile(models.Model):
@@ -39,17 +41,21 @@ class UserProfile(models.Model):
         ('Member', 'Member'),
     ]
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    #user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
 
 
 class Book(models.Model):
-    title = models.CharField(max_length=100)
-    author = models.ForeignKey('Author', on_delete=models.CASCADE)
+    #title = models.CharField(max_length=100)
+    #author = models.ForeignKey('Author', on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    author = models.CharField(max_length=100)
 
+    
     class Meta:
         permissions = [
             ("can_add_book", "Can add book"),

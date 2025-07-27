@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "bookshelf",
+    #"bookshelf",
     "relationship_app",
     "accounts"
 ]
@@ -140,3 +140,4 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+#AUTH_USER_MODEL = 'bookshelf.CustomUser'
