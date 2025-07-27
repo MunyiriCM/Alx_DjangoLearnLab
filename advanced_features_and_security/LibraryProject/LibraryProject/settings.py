@@ -141,3 +141,78 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
+
+
+# settings.py (partial: focus on security settings)
+
+DEBUG = False  # Ensure this is False in production
+ALLOWED_HOSTS = ['yourdomain.com']  # Set your domain
+
+# Browser-side protections
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Secure cookies
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Optional: Add CSP (with django-csp)
+INSTALLED_APPS += ['csp']
+MIDDLEWARE += [
+    'csp.middleware.CSPMiddleware',
+]
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'", 'https://trusted.cdn.com')
+
+
+# form_example.html (ensure CSRF token is included)
+
+#<form method="post">
+ #   {% csrf_token %}  <!-- CSRF protection -->
+  #  {{ form.as_p }}
+   # <button type="submit">Submit</button>
+#</form>
+
+
+# views.py (secure view handling user input)
+
+from django.shortcuts import render
+from bookshelf.forms import BookForm
+from bookshelf.models import Book
+from django.db.models import Q
+from django.views.decorators.csrf import csrf_protect
+
+# Safe handling with Django forms
+
+@csrf_protect
+def search_books(request):
+    query = request.GET.get("q")
+    results = []
+    if query:
+        results = Book.objects.filter(
+            Q(title__icontains=query) | Q(author__icontains=query)
+        )  # No raw SQL used here
+    return render(request, "bookshelf/book_list.html", {"books": results})
+
+
+@csrf_protect
+def create_book(request):
+    if request.method == "POST":
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = BookForm()
+    return render(request, "bookshelf/form_example.html", {"form": form})
+
+
+# Documentation example (within views.py or separate README)
+"""
+Security Measures:
+- CSRF protection: {% csrf_token %} added to all forms.
+- SQL Injection: Avoided by using Django ORM.
+- XSS: Browser protections enabled via settings (X_FRAME_OPTIONS, etc).
+- Secure cookies enforced for CSRF and session.
+- Content Security Policy set via django-csp middleware.
+"""
