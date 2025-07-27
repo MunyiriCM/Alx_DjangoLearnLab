@@ -148,6 +148,13 @@ AUTH_USER_MODEL = 'bookshelf.CustomUser'
 DEBUG = False  # Ensure this is False in production
 ALLOWED_HOSTS = ['yourdomain.com']  # Set your domain
 
+# HTTPS and Security Settings
+SECURE_SSL_REDIRECT = True  # Redirect all HTTP to HTTPS
+SECURE_HSTS_SECONDS = 31536000  # Instruct browser to use HTTPS for 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Include subdomains in HSTS
+SECURE_HSTS_PRELOAD = True  # Allow preloading of HSTS policy
+
+
 # Browser-side protections
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
@@ -185,7 +192,6 @@ from django.views.decorators.csrf import csrf_protect
 
 # Safe handling with Django forms
 
-@csrf_protect
 def search_books(request):
     query = request.GET.get("q")
     results = []
@@ -196,7 +202,6 @@ def search_books(request):
     return render(request, "bookshelf/book_list.html", {"books": results})
 
 
-@csrf_protect
 def create_book(request):
     if request.method == "POST":
         form = BookForm(request.POST)
@@ -210,9 +215,11 @@ def create_book(request):
 # Documentation example (within views.py or separate README)
 """
 Security Measures:
-- CSRF protection: {% csrf_token %} added to all forms.
+- HTTPS: SECURE_SSL_REDIRECT, HSTS settings enabled to enforce HTTPS.
+- Secure Cookies: SESSION_COOKIE_SECURE and CSRF_COOKIE_SECURE set to True.
+- CSRF Protection: {% csrf_token %} added to all forms.
 - SQL Injection: Avoided by using Django ORM.
 - XSS: Browser protections enabled via settings (X_FRAME_OPTIONS, etc).
-- Secure cookies enforced for CSRF and session.
-- Content Security Policy set via django-csp middleware.
+- Content Security Policy: Set via django-csp middleware.
+- Deployment: SSL/TLS certificates should be installed and configured in the web server.
 """
