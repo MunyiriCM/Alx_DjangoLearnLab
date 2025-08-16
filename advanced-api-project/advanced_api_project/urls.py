@@ -24,5 +24,6 @@ urlpatterns = [
     path('books/', BookListCreateView.as_view()),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),  # this line connects your app
+    path('', include('api.urls')),  # <- include this
 ]
 
