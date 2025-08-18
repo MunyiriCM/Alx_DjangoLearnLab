@@ -14,6 +14,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Q
 
 
 def register(request):
@@ -107,3 +108,18 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         return self.request.user == self.get_object().author
+    
+
+    def search_posts(request):
+        query = request.GET.get('q')
+        results = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+        return render(request, 'blog/search_results.html', {'query': query, 'results': results})
+
+
+def posts_by_tag(request, tag):
+    posts = Post.objects.filter(tags__name__iexact=tag)
+    return render(request, 'blog/posts_by_tag.html', {'posts': posts, 'tag': tag})
