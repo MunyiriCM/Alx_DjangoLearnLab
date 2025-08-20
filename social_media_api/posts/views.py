@@ -56,7 +56,6 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Post, Like
-from .serializers import PostSerializer
 from notifications.models import Notification
 
 
@@ -64,15 +63,19 @@ class LikePostView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
+        # ✅ correct usage of get_object_or_404
         post = get_object_or_404(Post, pk=pk)
 
-        # prevent duplicate likes
+        # ✅ no get_or_create — we explicitly check for duplicates
         if Like.objects.filter(post=post, user=request.user).exists():
-            return Response({"detail": "You already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "You already liked this post."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         Like.objects.create(post=post, user=request.user)
 
-        # create notification for post owner
+        # create notification for the post author
         if post.author != request.user:
             Notification.objects.create(
                 recipient=post.author,
@@ -92,7 +95,10 @@ class UnlikePostView(generics.GenericAPIView):
 
         like = Like.objects.filter(post=post, user=request.user).first()
         if not like:
-            return Response({"detail": "You haven't liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "You haven't liked this post."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         like.delete()
         return Response({"detail": "Post unliked successfully!"}, status=status.HTTP_200_OK)
