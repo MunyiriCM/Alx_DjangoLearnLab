@@ -17,3 +17,29 @@ Fields:
 
 Fields:
 - id, post, author {id, username}, content, created_at, updated_at
+
+
+
+
+
+## Follow System
+
+### Follow a user
+POST /auth/follow/{user_id}/   (auth required)
+
+### Unfollow a user
+POST /auth/unfollow/{user_id}/
+
+### View followers
+GET /auth/{user_id}/followers/
+
+### View following
+GET /auth/{user_id}/following/
+
+
+## Feed
+
+### Get feed
+GET /api/feed/   (auth required)
+
+Returns posts from all users the current user is following, ordered by newest first.
