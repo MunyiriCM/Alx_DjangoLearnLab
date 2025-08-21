@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views
 from . import views
 from .views import (
     PostListView, PostDetailView, PostCreateView,
-    PostUpdateView, PostDeleteView
+    PostUpdateView, PostDeleteView, PostByTagListView
 )
 from .views import CommentCreateView, CommentUpdateView, CommentDeleteView
 
@@ -27,7 +27,8 @@ urlpatterns = [
     path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post-update'),
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
     path("post/<int:pk>/comments/new/", views.add_comment, name="add_comment"),
-
+# ✅ Tag filtering
+    path('tags/<slug:tag_slug>/', PostByTagListView.as_view(), name='posts-by-tag'),
 ]
 
 urlpatterns += [

@@ -1,9 +1,14 @@
-{% extends 'blog/base.html' %}
+{% extends "blog/base.html" %}
+
 {% block content %}
-  <h2>Posts tagged with "{{ tag }}"</h2>
-  {% for post in posts %}
-    <h3><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h3>
-  {% empty %}
-    <p>No posts found.</p>
-  {% endfor %}
+  <h2>Posts tagged with "{{ view.kwargs.tag_slug }}"</h2>
+  <ul>
+    {% for post in posts %}
+      <li>
+        <a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a>
+      </li>
+    {% empty %}
+      <p>No posts found with this tag.</p>
+    {% endfor %}
+  </ul>
 {% endblock %}
