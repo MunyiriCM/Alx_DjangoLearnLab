@@ -33,3 +33,16 @@ class Tag(models.Model):
 class Post(models.Model):
     # your existing fields...
     tags = models.ManyToManyField(Tag, blank=True)
+
+
+from taggit.managers import TaggableManager  # if you're using tagging
+
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    tags = TaggableManager(blank=True)  # optional, if you're using tags
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
