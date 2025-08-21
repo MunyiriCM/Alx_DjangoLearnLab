@@ -119,6 +119,36 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         ).distinct()
         return render(request, 'blog/search_results.html', {'query': query, 'results': results})
 
+@login_required
+def add_comment(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            return redirect("post-detail", pk=post.pk)
+    else:
+        form = CommentForm()
+
+    return render(request, "blog/comment_form.html", {"form": form})
+
+def search_posts(request):
+    query = request.GET.get("q")
+    results = []
+
+    if query:
+        results = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+
+    return render(request, "blog/search_results.html", {"results": results, "query": query})
+
 
 def posts_by_tag(request, tag):
     posts = Post.objects.filter(tags__name__iexact=tag)

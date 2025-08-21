@@ -20,12 +20,11 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class PostForm(forms.ModelForm):
-    tag_names = forms.CharField(required=False, help_text="Enter tags separated by commas")
-
     class Meta:
         model = Post
-        fields = ['title', 'content', 'tag_names']
+        fields = ['title', 'content', 'tags']  # ✅ include tags
 
+        
     def save(self, commit=True):
         post = super().save(commit=False)
         if commit:
